@@ -6,16 +6,12 @@ from urllib.parse import urlparse
 import os
 
 def download_file(url, start, end, thread, extension ):
-    print(f"Starting download from {url}")
     headers = {
         "Range": f"bytes={start}-{end}"
     }
     
     response = requests.get(url, headers=headers, stream=True)
-    print(
-        f"Thread {thread}:",
-        response.status_code
-    )
+    print(f"Thread {thread}: {response.status_code}")
     with open(f"chunk_{thread}{extension}", 'wb') as f:
         f.write(response.content)
 
@@ -29,9 +25,7 @@ def thread_creation(url, no_of_threads, extension ):
     threads = []
     response = requests.head(url)
     print(response.headers)
-    file_size = int(
-        response.headers["Content-Length"]
-    )
+    file_size = int(response.headers["Content-Length"])
     chunk_size = file_size // no_of_threads
     print(f"File size: {file_size} bytes, Chunk size: {chunk_size} bytes")
     for thread in range(no_of_threads):
